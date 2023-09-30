@@ -76,7 +76,7 @@ sub compose {
 
         $text =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
 
-        push(@items, "INSERT INTO cmm.content (title, `text`, collection_id) VALUES(\"$title\", \"$text\", $collectionId);");
+        push(@items, "INSERT INTO cmm.content (title, `text`, collection_id) VALUES(\n\"$title\",\n\"$text\",\n$collectionId);");
         
         $title = "";
         $titleCompleted = 0;
