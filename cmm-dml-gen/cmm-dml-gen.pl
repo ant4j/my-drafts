@@ -12,7 +12,7 @@ open(FH, "<", $filename) or die $!;
 my $collectionId = "1";
 
 my $title = "";
-my $titleCompleted = 0;
+my $titlePartsCount = 0;
 
 my $text = "";
 
@@ -27,36 +27,34 @@ while(<FH>) {
 
     if($currentLine =~ /\d{1,3}\.\ {0,3}([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?|\d{1,3})*)+$/) { # first part of title
         
-        compose();
+        composeDml();
 
-        if(!$titleCompleted) {
+        $currentLine =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
 
-            $currentLine =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
-
-            $title = $currentLine;
-
-        }
+        $title = $currentLine;
     
     #                                           /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?|\d{1,3})*)+$/
-    } elsif(!$titleCompleted && $currentLine =~ /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?)*)+$/) { # possible second part of title
+    } elsif($titlePartsCount < 2 && $currentLine =~ /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?)*)+$/) { # possible second part of title
     
         $currentLine =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
         
         $title = "$title"." $currentLine";
-
-        $titleCompleted = 1;
         
-    } else { # title
+    } else { # text
 
-        $currentLine =~ s/\"/\\"/g;
+        $currentLine =~ s/\"/\\"/g; # relace backslash with double backslash for double quote symbol
         
         $text = "$text"."$currentLine\n";
         
     }
+
+    if($titlePartsCount < 2) {
+        $titlePartsCount++;
+    }
     
 }
 
-compose();
+composeDml();
 
 close(FH);
 
@@ -70,7 +68,7 @@ close(FH);
 
 # SUBROUTINES
 
-sub compose {
+sub composeDml {
     
     if(length($title) > 0 && length($text) > 0) {
 
@@ -79,7 +77,8 @@ sub compose {
         push(@items, "INSERT INTO cmm.content (title, `text`, collection_id) VALUES(\n\"$title\",\n\"$text\",\n$collectionId);");
         
         $title = "";
-        $titleCompleted = 0;
+        
+        $titlePartsCount = 0;
 
         $text = "";
 
