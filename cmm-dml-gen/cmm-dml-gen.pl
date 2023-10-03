@@ -31,18 +31,22 @@ while(<FH>) {
 
         $currentLine =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
 
+        $currentLine =~ s/\'/\\'/g; # relace backslash with double backslash for single quote symbol
+
         $title = $currentLine;
     
     #                                           /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?|\d{1,3})*)+$/
     } elsif($titlePartsCount < 2 && $currentLine =~ /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?)*)+$/) { # possible second part of title
     
         $currentLine =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
+
+        $currentLine =~ s/\'/\\'/g; # relace backslash with double backslash for single quote symbol
         
         $title = "$title"." $currentLine";
         
     } else { # text
 
-        $currentLine =~ s/\"/\\"/g; # relace backslash with double backslash for double quote symbol
+        $currentLine =~ s/\'/\\'/g; # relace backslash with double backslash for single quote symbol
         
         $text = "$text"."$currentLine\n";
         
@@ -74,7 +78,7 @@ sub composeDml {
 
         $text =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
 
-        push(@items, "INSERT INTO cmm.content (title, `text`, collection_id) VALUES(\n\"$title\",\n\"$text\",\n$collectionId);");
+        push(@items, "INSERT INTO cmm.content (title, `text`, collection_id) VALUES(\n'$title',\n'$text',\n$collectionId);");
         
         $title = "";
         
