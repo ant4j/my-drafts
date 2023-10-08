@@ -3,13 +3,13 @@
 use warnings;
 use strict;
 
-my $filename = "./input/example_input.txt";
+my ($filename, $collectionId) = @ARGV;
+
+if (not defined $filename or not defined $collectionId) {
+  die "./cmm-dml-gen.pl <filename> <collection-id>\n";
+}
 
 open(FH, "<", $filename) or die $!;
-
-#----------VARS----------
-
-my $collectionId = "1";
 
 my $title = "";
 my $titlePartsCount = 0;
@@ -17,8 +17,6 @@ my $titlePartsCount = 0;
 my $text = "";
 
 my @items = ();
-
-#----------VARS----------
 
 while(<FH>) {
 
@@ -36,7 +34,7 @@ while(<FH>) {
         $title = $currentLine;
     
     #                                           /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?|\d{1,3})*)+$/
-    } elsif($titlePartsCount < 2 && $currentLine =~ /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?)*)+$/) { # possible second part of title
+    } elsif($titlePartsCount < 2 and $currentLine =~ /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?)*)+$/) { # possible second part of title
     
         $currentLine =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
 
@@ -74,7 +72,7 @@ close(FH);
 
 sub composeDml {
     
-    if(length($title) > 0 && length($text) > 0) {
+    if(length($title) > 0 and length($text) > 0) {
 
         $text =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
 
