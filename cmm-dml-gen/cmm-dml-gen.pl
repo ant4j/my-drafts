@@ -23,7 +23,7 @@ while(<FH>) {
     my $currentLine = "$_";
     chomp($currentLine);
 
-    if($currentLine =~ /\d{1,3}\.\ {0,3}([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?|\d{1,3})*)+$/) { # first part of title
+    if($currentLine =~ /\d{1,3}\.\ {0,3}([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?|\(|\)|\d{1,3})*)+$/) { # first part of title
         
         composeDml();
 
@@ -33,8 +33,8 @@ while(<FH>) {
 
         $title = $currentLine;
     
-    #                                           /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?|\d{1,3})*)+$/
-    } elsif($titlePartsCount < 2 and $currentLine =~ /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?)*)+$/) { # possible second part of title
+    #                                           /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?|\(|\)|\d{1,3})*)+$/
+    } elsif($titlePartsCount < 2 and $currentLine =~ /([A-Z](\,|\Ì|\È|\À|\Ù|\Ò|\'|\.|\ |\’|\…|\.|\?|\(|\))*)+$/) { # possible second part of title
     
         $currentLine =~ s/^\s+|\s+$//g; # trim leading and trailing white spaces
 
