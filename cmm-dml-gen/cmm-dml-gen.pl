@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-my $filename = "./input/training_input.txt";
+my $filename = "./input/example_input.txt";
 
 open(FH, "<", $filename) or die $!;
 
